@@ -1,6 +1,7 @@
 // --- START OF FILE: src/app/types.ts ---
 
 export interface MaterialInputs {
+  [key: string]: number;
   yieldStrength: number;
   ultimateStrength: number;
   elasticModulus: number;
@@ -9,6 +10,7 @@ export interface MaterialInputs {
 }
 
 export interface SectionGeometryInputs {
+  [key: string]: number;
   depth: number;
   breadth: number;
   lipWidth: number;
@@ -22,6 +24,7 @@ export interface SectionGeometryInputs {
 }
 
 export interface SectionPropertiesInputs {
+  [key: string]: number;
   grossArea: number;
   perimeter: number;
   iXx: number;
@@ -42,6 +45,7 @@ export interface SectionPropertiesInputs {
 
 // Replace this interface
 export interface AppliedLoads {
+  [key: string]: number;
   axialForce: number; // P
   momentMx: number;   // Mx
   momentMy: number;   // My
@@ -49,6 +53,7 @@ export interface AppliedLoads {
 }
 
 export interface EffectiveLengthInputs {
+  [key: string]: number;
   unsupportedLenX: number; // Lx
   unsupportedLenY: number; // Ly
   unsupportedLenTorsion: number; // Lt
@@ -58,6 +63,7 @@ export interface EffectiveLengthInputs {
 }
 
 export interface ServiceabilityInputs {
+  [key: string]: number;
   totalUprightHeight: number; // H for sway check
   maxInducedSway: number;     // From external analysis
 }
@@ -69,13 +75,12 @@ export interface UprightDesignInput {
   effectiveLengths: EffectiveLengthInputs;
   appliedLoads: AppliedLoads;
   serviceability: ServiceabilityInputs;
-  project_info?: { [key: string]: any };
+  project_info?: Record<string, unknown>;
 }
 
 // --- Interfaces for the results from the backend ---
 export interface BucklingResult {
   capacity: number;
-  [key: string]: any; // for other detailed fields
 }
 
 export interface InteractionResult {

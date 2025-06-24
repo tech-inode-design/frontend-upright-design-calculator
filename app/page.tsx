@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -9,22 +9,13 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import {
   Calculator,
-  RotateCcw,
   Download,
   FileText,
-  CheckCircle,
-  XCircle,
   Loader2
 } from "lucide-react"
 import {
   UprightDesignInput,
-  UprightDesignResults,
-  MaterialInputs,
-  SectionGeometryInputs,
-  SectionPropertiesInputs,
-  EffectiveLengthInputs,
-  AppliedLoads,
-  ServiceabilityInputs
+  UprightDesignResults
 } from "@/app/types" // Adjust the import path as necessary
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
@@ -114,10 +105,11 @@ export default function UprightDesignTool() {
       }
       const data: UprightDesignResults = await response.json();
       setResults(data);
-    } catch (err: any) {
-      console.error(err);
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error(error);
       setResults(initialResults);
-      alert(`Error: ${err.message}`);
+      alert(`Error: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -134,8 +126,9 @@ export default function UprightDesignTool() {
       if (!response.ok) throw new Error("Failed to load example");
       const data: UprightDesignInput = await response.json();
       setInputs(data);
-    } catch (err:any) {
-      console.error(err);
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error(error);
       alert("Failed to load example data.");
     } finally {
         // The calculate useEffect will trigger automatically when inputs change
@@ -168,9 +161,10 @@ export default function UprightDesignTool() {
       window.URL.revokeObjectURL(url);
       setReportProgress(100); setReportStep('Done! Downloading...');
       setTimeout(() => setShowReportDialog(false), 1500);
-    } catch (err: any) {
-      console.error("Report generation error:", err);
-      alert(`Failed to generate report: ${err.message}`);
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error("Report generation error:", error);
+      alert(`Failed to generate report: ${error.message}`);
       setShowReportDialog(false);
     } finally {
       setIsLoading(false);
@@ -428,7 +422,15 @@ export default function UprightDesignTool() {
 }
 
 // Helper component for structured input sections
-const InputSection = ({ title, data, section, onChange, units }: { title: string, data: any, section: InputSection, onChange: Function, units?: {[key: string]: string} }) => (
+type InputSectionProps = {
+  title: string;
+  data: { [key: string]: number };
+  section: InputSection;
+  onChange: (section: InputSection, field: string, value: string) => void;
+  units?: { [key: string]: string };
+};
+
+const InputSection = ({ title, data, section, onChange, units }: InputSectionProps) => (
     <div className="space-y-3">
         <h3 className="font-semibold text-gray-800">{title}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
